@@ -12,26 +12,22 @@ composer require rsthn/rose-otp
 
 ## Configuration Section: `OTP`
 
-
-|Field|Type|Name|Description|
-|----|----|-----------|-------|
-|host|`string`|SMTP host name.|Required
-|username|`string`|Username for the SMTP server.|Required
-|password|`string`|Password for the SMTP server.|Required
-|port|`int`|Port number to connect.|Default is port `587`.
-|secure|`boolean`, `string`|SMTP secure connection mode.|Default is `true`.<br/>Use `explicit` if port is 587, `implicit` otherwise.<br/>Set to `false` to disable and to `true` to use automatic detection based on port number.
-|from|`string`|Email address of the sender.|Optional
-|fromName|`string`|Name of the sender.|Optional
-
+<br/>
 
 ## Expression Functions
 
-### `mail::send` name:string value:string ...
+### `otp::create`
+
+Creates a new secret key to be later used to generate one-time passwords.
 
 ```lisp
-(mail::send
-	RCPT 'example@host.com'
-	SUBJECT 'This is a test.'
-	BODY '<b>Thanks for reading this email.</b>'
-)
+(otp::create)
+```
+
+### `otp::get` secretKey:string
+
+Returns the current time-based password given a secret key.
+
+```lisp
+(otp::get (secretKey))
 ```
