@@ -1,0 +1,27 @@
+{
+    "name": "rsthn/rose-otp",
+    "description": "OTP Adapter for Rose",
+    "version": "1.0.0",
+    "type": "rose-extension",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Jonathan Palencia",
+            "email": "strikeone88@rsthn.com"
+        }
+    ],
+    "extra": {
+        "rose-ext-identifier": "OTP"
+    },
+    "minimum-stability": "stable",
+    "require": {
+		"rsthn/rose-extension-installer": "*",
+		"php": "^8.1",
+        "spomky-labs/otphp": "^11.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "rsthn/rose-extension-installer": true
+        }
+    }
+}
