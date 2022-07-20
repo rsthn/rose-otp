@@ -2,15 +2,11 @@
 
 This extension adds TOTP/HOTP support to [Rose](https://github.com/rsthn/rose-core) to create secret codes and one-time tokens using the awesome [otphp](https://github.com/Spomky-Labs/otphp) library of Spomky-Labs.
 
-<br/>
-
 # Installation
 
 ```sh
 composer require rsthn/rose-otp
 ```
-
-<br/>
 
 ## Configuration Section: `OTP`
 
@@ -20,8 +16,6 @@ composer require rsthn/rose-otp
 |digits|`integer`|Number of digits to use for the generated one-time passwords.|8
 |period|`integer`|Period to generate new tokens (in seconds).|30
 |tolerance|`integer`|Number of seconds to tolerate as leeway when verifying tokens.|3
-
-<br/>
 
 ## Expression Functions
 
@@ -37,8 +31,6 @@ The OTP settings are obtained from the OTP configuration section.
 (otp::create)
 ```
 
-<br/>
-
 ### `otp::get` secretKey:string [tokenTime:integer]
 
 Returns the current time-based password given a secret key.
@@ -46,8 +38,6 @@ Returns the current time-based password given a secret key.
 ```lisp
 (otp::get (secretKey))
 ```
-
-<br/>
 
 ### `otp::verify` secretKey:string token:string
 
@@ -58,8 +48,6 @@ Verifies the specified token to check if it is valid, returns boolean.
 	(throw "OTP code is incorrect")
 )
 ```
-
-<br/>
 
 ### `otp::uri` secretKey:string label:string [issuer:string]
 
