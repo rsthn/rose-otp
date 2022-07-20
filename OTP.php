@@ -15,7 +15,7 @@ use Rose\Expr;
 Expr::register('otp::create', function ($args)
 {
 	$config = Configuration::getInstance()->OTP;
-	$otp = TOTP::create(null, $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha256', $config?->get('digits') ?? 6);
+	$otp = TOTP::create(null, $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha512', $config?->get('digits') ?? 8);
 	return $otp->getSecret();
 });
 
@@ -30,7 +30,7 @@ Expr::register('otp::get', function ($args)
 	if (!$args->has(1))
 		throw new Error('otp::get requires a secret key');
 
-	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha256', $config?->get('digits') ?? 6);
+	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha512', $config?->get('digits') ?? 8);
 	return $args->has(2) ? $otp->at($args->get(2)) : $otp->now();
 });
 
@@ -48,13 +48,13 @@ Expr::register('otp::verify', function ($args)
 	if (!$args->has(2))
 		throw new Error('otp::verify requires a token');
 
-	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha256', $config?->get('digits') ?? 6);
-	return $otp->verify($args->get(2), null, $config?->get('tolerance') ?? 5);
+	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha512', $config?->get('digits') ?? 8);
+	return $otp->verify($args->get(2), null, $config?->get('tolerance') ?? 3);
 });
 
 /**
  * Returns the OTP-AUTH URI to be used in OTP clients (like Authy or Google Authenticator).
- * (otp::uri :secretKey :label)
+ * (otp::uri :secretKey :label [:issuer] [:logoUrl])
  */
 Expr::register('otp::uri', function ($args)
 {
@@ -66,8 +66,17 @@ Expr::register('otp::uri', function ($args)
 	if (!$args->has(2))
 		throw new Error('otp::uri requires a label');
 
-	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha256', $config?->get('digits') ?? 6);
+	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha512', $config?->get('digits') ?? 8);
 
 	$otp->setLabel($args->get(2));
-	return $otp->getProvisioningUri();
+
+	if ($args->has(3) && $args->get(3))
+		$otp->setIssuer($args->get(3));
+
+	$tmp = $otp->getProvisioningUri();
+
+	if ($args->has(4) && $args->get(4))
+		$tmp .= '&image=' . urlencode($args->get(4));
+
+	return $tmp;
 });

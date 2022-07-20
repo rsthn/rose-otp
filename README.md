@@ -16,8 +16,8 @@ composer require rsthn/rose-otp
 
 |Field|Type|Description|Default|
 |----|----|-----------|-------|
-|hash|`string`|Hash function to use.|sha256
-|digits|`integer`|Number of digits to use for the generated one-time passwords.|6
+|hash|`string`|Hash function to use.|sha512
+|digits|`integer`|Number of digits to use for the generated one-time passwords.|8
 |period|`integer`|Period to generate new tokens (in seconds).|30
 |tolerance|`integer`|Number of seconds to tolerate as leeway when verifying tokens.|3
 
@@ -61,10 +61,10 @@ Verifies the specified token to check if it is valid, returns boolean.
 
 <br/>
 
-### `otp::uri` secretKey:string label:string
+### `otp::uri` secretKey:string label:string [issuer:string]
 
 Returns the OTP-AUTH URI to be used in OTP clients (like Authy or Google Authenticator).
 
 ```lisp
-(otp::uri (secretKey) "rsthn")
+(otp::uri (secretKey) "Zork")
 ```
