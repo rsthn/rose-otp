@@ -12,7 +12,7 @@ composer require rsthn/rose-otp
 
 |Field|Type|Description|Default|
 |----|----|-----------|-------|
-|hash|`string`|Hash function to use.|sha512
+|hash|`string`|Hash function to use.|sha1
 |digits|`integer`|Number of digits to use for the generated one-time passwords.|7
 |period|`integer`|Period to generate new tokens (in seconds).|30
 |tolerance|`integer`|Number of seconds to tolerate as leeway when verifying tokens.|3
