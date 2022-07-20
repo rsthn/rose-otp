@@ -4,6 +4,7 @@ namespace Rose\Ext\Wind;
 
 use OTPHP\TOTP;
 
+use Rose\Configuration;
 use Rose\Errors\Error;
 use Rose\Expr;
 
@@ -13,19 +14,60 @@ use Rose\Expr;
  */
 Expr::register('otp::create', function ($args)
 {
-	$otp = TOTP::create();
+	$config = Configuration::getInstance()->OTP;
+	$otp = TOTP::create(null, $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha256', $config?->get('digits') ?? 6);
 	return $otp->getSecret();
 });
 
 /**
  * Returns the current time-based password given a secret key.
- * (otp::get :secretKey)
+ * (otp::get :secretKey [:tokenTime])
  */
 Expr::register('otp::get', function ($args)
 {
+	$config = Configuration::getInstance()->OTP;
+
 	if (!$args->has(1))
 		throw new Error('otp::get requires a secret key');
 
-	$otp = TOTP::create($args->get(1));
-	return $otp->now();
+	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha256', $config?->get('digits') ?? 6);
+	return $args->has(2) ? $otp->at($args->get(2)) : $otp->now();
+});
+
+/**
+ * Verifies the specified token to check if it is valid, returns boolean.
+ * (otp::verify :secretKey :token)
+ */
+Expr::register('otp::verify', function ($args)
+{
+	$config = Configuration::getInstance()->OTP;
+
+	if (!$args->has(1))
+		throw new Error('otp::verify requires a secret key');
+
+	if (!$args->has(2))
+		throw new Error('otp::verify requires a token');
+
+	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha256', $config?->get('digits') ?? 6);
+	return $otp->verify($args->get(2), null, $config?->get('tolerance') ?? 5);
+});
+
+/**
+ * Returns the OTP-AUTH URI to be used in OTP clients (like Authy or Google Authenticator).
+ * (otp::uri :secretKey :label)
+ */
+Expr::register('otp::uri', function ($args)
+{
+	$config = Configuration::getInstance()->OTP;
+
+	if (!$args->has(1))
+		throw new Error('otp::uri requires a secret key');
+
+	if (!$args->has(2))
+		throw new Error('otp::uri requires a label');
+
+	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha256', $config?->get('digits') ?? 6);
+
+	$otp->setLabel($args->get(2));
+	return $otp->getProvisioningUri();
 });
