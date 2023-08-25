@@ -1,6 +1,6 @@
 # OTP Adapter for Rose
 
-This extension adds TOTP/HOTP support to [Rose](https://github.com/rsthn/rose-core) to create secret codes and one-time tokens using the awesome [otphp](https://github.com/Spomky-Labs/otphp) library of Spomky-Labs.
+Adds TOTP/HOTP support to [Rose](https://github.com/rsthn/rose-core) to create secret codes and one-time tokens using the awesome [otphp](https://github.com/Spomky-Labs/otphp) library of Spomky-Labs.
 
 # Installation
 
@@ -21,19 +21,17 @@ composer require rsthn/rose-otp
 
 ### `otp::create`
 
-Creates a new secret key to be later used to generate one-time passwords.
-
-Generates a 64-byte random string which is later converted to Base32 resulting in a string of a maximum length of 128 chars that should be stored in a safe place to be used later.
+Creates a new secret key to be later used to generate one-time passwords. The output is a 64-byte random string which is later converted to Base32 resulting in a string with a maximum length of 128 chars that should be stored in a safe place to be used later.
 
 The OTP settings are obtained from the OTP configuration section.
 
 ```lisp
-(otp::create)
+(set secretKey (otp::create))
 ```
 
 ### `otp::get` secretKey:string [tokenTime:integer]
 
-Returns the current time-based password given a secret key.
+Returns the current time-based token given a secret key. Can be used to show it to the user via safe means such as email, SMS or a custom made app. Although if the user has an authenticator app such as Google Authenticator or Authy, it is recommended to use that with the `otp::uri` function instead.
 
 ```lisp
 (otp::get (secretKey))
