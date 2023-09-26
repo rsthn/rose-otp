@@ -49,7 +49,7 @@ Expr::register('otp::verify', function ($args)
 		throw new Error('otp::verify requires a token');
 
 	$otp = TOTP::create($args->get(1), $config?->get('period') ?? 30, $config?->get('hash') ?? 'sha1', $config?->get('digits') ?? 7);
-	return $otp->verify($args->get(2), null, $config?->get('tolerance') ?? 0);
+	return $otp->verify($args->get(2) ?? '', null, $config?->get('tolerance') ?? 0);
 });
 
 /**
